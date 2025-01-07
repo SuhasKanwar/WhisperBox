@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthProvider from "../context/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Whisper Box",
@@ -13,11 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`antialiased`}
-      >
-        {children}
-      </body>
+      <AuthProvider>
+        <body className={`antialiased`}>
+          {children}
+        </body>
+      </AuthProvider>
     </html>
   );
 }

@@ -6,6 +6,21 @@ export async function POST(request: Request){
     await dbConnect();
     try{
         const { username, otp } = await request.json();
+
+        const validationResult = verifySchema.safeParse({ code: otp });
+        
+        if(!validationResult.success){
+            return Response.json(
+                {
+                    success: false,
+                    message: validationResult.error.errors[0].message
+                },
+                {
+                    status: 400
+                }
+            );
+        }
+
         const decodedUsername = decodeURIComponent(username);
         const user = await UserModel.findOne({ username: decodedUsername });
 

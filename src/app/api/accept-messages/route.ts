@@ -61,3 +61,61 @@ export async function POST(request: Request){
         );
     }
 }
+
+export async function GET(request: Request){
+    await dbConnect();
+
+    const session = await getServerSession(authOptions);
+    const user: User = session?.user as User;
+    if(!session || !session.user){
+        return Response.json(
+            {
+                success: false,
+                message: "User not authenticated"
+            },
+            {
+                status: 401
+            }
+        );
+    }
+
+    const userID = user._id;
+    try{
+        const foundUser = await UserModel.findById(userID);
+        if(!foundUser){
+            return Response.json(
+                {
+                    success: false,
+                    message: "User not found"
+                },
+                {
+                    status: 404
+                }
+            );
+        }
+        return Response.json(
+            {
+                success: true,
+                message: "User found",
+                data: {
+                    acceptMessages: foundUser.isAcceptingMessages
+                }
+            },
+            {
+                status: 200
+            }
+        );
+    }
+    catch(err){
+        console.error("Failed to find the user", err);
+        return Response.json(
+            {
+                success: false,
+                message: "Failed to find the user"
+            },
+            {
+                status: 500
+            }
+        );
+    }
+}

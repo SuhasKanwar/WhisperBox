@@ -21,10 +21,9 @@ const SignUpPage = () => {
   const [usernameMessage, setusernameMessage] = useState('');
   const [isCheckingUsername, setisCheckingUsername] = useState(false);
   const [isSubmitting, setisSubmitting] = useState(false);
+  
   const router = useRouter();
-
   const debounced = useDebounceCallback(setusername, 500);
-
   const { toast } = useToast();
 
   // zod implementation
@@ -126,7 +125,7 @@ const SignUpPage = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Email"
+                    <Input type='email' placeholder="Email"
                       {...field}
                     />
                   </FormControl>

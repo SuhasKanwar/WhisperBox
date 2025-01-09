@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import "../globals.css";
-import AuthProvider from "../../context/AuthProvider";
+import "./globals.css";
+import AuthProvider from "../context/AuthProvider";
 import { Toaster } from "@/components/ui/toaster"
+import NavBar from "@/components/NavBar";
 
 export const metadata: Metadata = {
   title: "Whisper Box",
@@ -17,7 +18,12 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={`antialiased`}>
-          {children}
+          <header>
+            <NavBar />
+          </header>
+          <main>
+            {children}
+          </main>
           <Toaster />
         </body>
       </AuthProvider>

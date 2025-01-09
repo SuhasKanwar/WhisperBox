@@ -5,7 +5,9 @@ import { verifySchema } from "@/src/schemas/verifySchema";
 export async function POST(request: Request){
     await dbConnect();
     try{
-        const { username, otp } = await request.json();
+        const { username, code } = await request.json();
+
+        const otp = code;
 
         const validationResult = verifySchema.safeParse({ code: otp });
         
@@ -13,7 +15,7 @@ export async function POST(request: Request){
             return Response.json(
                 {
                     success: false,
-                    message: validationResult.error.errors[0].message
+                    message: "Invalid OTP"
                 },
                 {
                     status: 400

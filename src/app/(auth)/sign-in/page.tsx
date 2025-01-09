@@ -1,11 +1,16 @@
-import React from 'react'
+"use client";
 
-const page = () => {
+import React from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import Link from 'next/link';
+
+const SignInPage = () => {
   return (
     <div>
-        Signin page
     </div>
   )
 }
 
-export default page;
+export default SignInPage;

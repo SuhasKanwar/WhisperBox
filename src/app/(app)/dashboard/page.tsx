@@ -119,6 +119,10 @@ const DashboardPage = () => {
     }
   };
 
+  if (!session || !session.user) {
+    return (<div>Please Login</div>);
+  }
+
   const { username } = session?.user as User;
   const baseURL = `${window.location.protocol}//${window.location.host}`;
   const profileURL = `${baseURL}/u/${username}`;
@@ -130,10 +134,6 @@ const DashboardPage = () => {
       description: "Your profile URL has been copied to the clipboard",
     });
   };
-
-  if (!session || !session.user) {
-    <div>Please Login</div>;
-  }
 
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
@@ -160,7 +160,7 @@ const DashboardPage = () => {
           disabled={isSwitchLoading}
         />
         <span className="ml-2">
-          Accept Messages: {acceptMessages ? "On" : "Off"}
+          Accept Messages
         </span>
       </div>
       <Separator />
@@ -181,9 +181,9 @@ const DashboardPage = () => {
       </Button>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
         {messages.length > 0 ? (
-          messages.map((message, index) => (
+          messages.map((message) => (
             <MessageCard
-              key={message._id || message.id}
+              key={message.id}
               message={message}
               onMessageDelete={handleDeleteMessage}
             />

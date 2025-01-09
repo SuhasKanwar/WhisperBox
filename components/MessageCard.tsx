@@ -30,8 +30,8 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle></CardTitle>
-    
+          <CardTitle>{message.content}</CardTitle>
+          <CardDescription></CardDescription>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant='destructive'><X className="w-5 h-5"/></Button>
@@ -50,8 +50,6 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-    
-          <CardDescription></CardDescription>
         </CardHeader>
         <CardContent></CardContent>
       </Card>

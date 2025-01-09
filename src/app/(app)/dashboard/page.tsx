@@ -71,6 +71,7 @@ const DashboardPage = () => {
         }
       } catch (err) {
         const axiosError = err as AxiosError<ApiResponse>;
+        setMessages([]);
         toast({
           title: "Error",
           description:

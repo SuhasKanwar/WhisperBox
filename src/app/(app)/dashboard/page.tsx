@@ -13,8 +13,17 @@ import { User } from "next-auth";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, RefreshCcw } from "lucide-react";
+import { Loader2, RefreshCcw, Copy, LinkIcon } from 'lucide-react';
 import MessageCard from "@/components/MessageCard";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const DashboardPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -54,12 +63,11 @@ const DashboardPage = () => {
     } finally {
       setIsSwitchLoading(false);
     }
-  }, [setValue]);
+  }, [setValue, toast]);
 
   const fetchMessages = useCallback(
     async (refresh: boolean = false) => {
       setIsLoading(true);
-      setIsSwitchLoading(true);
       try {
         const response = await axios.get<ApiResponse>("/api/get-messages");
         setMessages(response.data.messages || []);
@@ -82,10 +90,9 @@ const DashboardPage = () => {
         });
       } finally {
         setIsLoading(false);
-        setIsSwitchLoading(false);
       }
     },
-    [setIsLoading, setMessages]
+    [toast]
   );
 
   useEffect(() => {
@@ -94,7 +101,7 @@ const DashboardPage = () => {
     }
     fetchMessages();
     fetchAcceptMessage();
-  }, [session, setValue, fetchAcceptMessage, fetchMessages]);
+  }, [session, fetchAcceptMessage, fetchMessages]);
 
   // Handle switch change
   const handleSwitchChange = async () => {
@@ -121,7 +128,19 @@ const DashboardPage = () => {
   };
 
   if (!session || !session.user) {
-    return (<div>Please Login</div>);
+    return (
+      <Card className="w-full max-w-md mx-auto mt-8">
+        <CardHeader>
+          <CardTitle>Access Denied</CardTitle>
+          <CardDescription>Please log in to view your dashboard.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button variant="secondary" className="w-full" asChild>
+            <a href="/sign-in">Go to Login</a>
+          </Button>
+        </CardContent>
+      </Card>
+    );
   }
 
   const { username } = session?.user as User;
@@ -137,62 +156,96 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
-      <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
+    <div className="container mx-auto py-8 px-4">
+      <h1 className="text-4xl font-bold mb-8">User Dashboard</h1>
 
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{" "}
-        <div className="flex items-center">
-          <input
-            type="text"
-            value={profileURL}
-            disabled
-            className="input input-bordered w-full p-2 mr-2"
-          />
-          <Button onClick={copyToClipboard}>Copy</Button>
-        </div>
+      <div className="grid gap-8 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Unique Link</CardTitle>
+            <CardDescription>Share this link to receive messages</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center space-x-2">
+              <div className="relative flex-grow">
+                <LinkIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                  type="text"
+                  value={profileURL}
+                  readOnly
+                  className="pl-8 pr-20"
+                />
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2"
+                  onClick={copyToClipboard}
+                >
+                  <Copy className="h-4 w-4 mr-1" />
+                  Copy
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Message Settings</CardTitle>
+            <CardDescription>Control whether you can receive new messages</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="accept-messages" className="text-base">
+                Accept Messages
+              </Label>
+              <Switch
+                id="accept-messages"
+                {...register("acceptMessages")}
+                checked={acceptMessages}
+                onCheckedChange={handleSwitchChange}
+                disabled={isSwitchLoading}
+              />
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="mb-4">
-        <Switch
-          {...register("acceptMessages")}
-          checked={acceptMessages}
-          onCheckedChange={handleSwitchChange}
-          disabled={isSwitchLoading}
-        />
-        <span className="ml-2">
-          Accept Messages
-        </span>
-      </div>
-      <Separator />
-
-      <Button
-        className="mt-4"
-        variant="outline"
-        onClick={(e) => {
-          e.preventDefault();
-          fetchMessages(true);
-        }}
-      >
-        {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <RefreshCcw className="h-4 w-4" />
-        )}
-      </Button>
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {messages.length > 0 ? (
-          messages.map((message) => (
-            <MessageCard
-              key={message.id}
-              message={message}
-              onMessageDelete={handleDeleteMessage}
-            />
-          ))
-        ) : (
-          <p>No messages to display.</p>
-        )}
-      </div>
+      <Card className="mt-8">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Your Messages</CardTitle>
+            <CardDescription>View and manage your received messages</CardDescription>
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => fetchMessages(true)}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCcw className="h-4 w-4" />
+            )}
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {messages.length > 0 ? (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {messages.map((message) => (
+                <MessageCard
+                  key={message.id}
+                  message={message}
+                  onMessageDelete={handleDeleteMessage}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 py-8">No messages to display.</p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

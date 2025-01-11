@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={`antialiased`}>
-          <header>
+          <header className="sticky top-0 z-50">
             <NavBar />
           </header>
           <main>

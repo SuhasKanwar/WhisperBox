@@ -13,5 +13,40 @@
         "title": "Message from Suka",
         "content": "How you doin!!!",
         "recieved": "10 Minutes Ago"
+    },
+    {
+        "title": "Message from Ava",
+        "content": "Excited to be part of WhisperBox!",
+        "recieved": "5 Minutes Ago"
+    },
+    {
+        "title": "Message from Liam",
+        "content": "Let’s make this amazing!",
+        "recieved": "2 Days Ago"
+    },
+    {
+        "title": "Message from Noah",
+        "content": "Glad to connect with you all!",
+        "recieved": "3 Hours Ago"
+    },
+    {
+        "title": "Message from Olive",
+        "content": "Looking forward to great discussions!",
+        "recieved": "1 Week Ago"
+    },
+    {
+        "title": "Message from Ethan",
+        "content": "Stay awesome, WhisperBox team!",
+        "recieved": "3 Days Ago"
+    },
+    {
+        "title": "Message from Emma",
+        "content": "This is such a cool platform!",
+        "recieved": "30 Minutes Ago"
+    },
+    {
+        "title": "Message from Olivia",
+        "content": "Love the vibes here at WhisperBox!",
+        "recieved": "15 Seconds Ago"
     }
 ]

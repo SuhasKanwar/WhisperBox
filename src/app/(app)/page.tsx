@@ -32,7 +32,7 @@ const IndexPage = () => {
           <p className="text-xl md:text-2xl text-muted-foreground mb-8">
             Explore WhisperBox - Where your identity remains a secret.
           </p>
-          <Link href="/sign-up">
+          <Link href="/sign-in">
             <Button size="lg" className="text-lg">
               Get Started <ArrowRight className="ml-2" />
             </Button>
@@ -84,7 +84,7 @@ const IndexPage = () => {
           <p className="text-xl text-muted-foreground mb-6">
             Join our community and experience the thrill of anonymous messaging.
           </p>
-          <Link href="/create-profile">
+          <Link href="/sign-up">
             <Button size="lg" variant="outline" className="text-lg">
               Create Your Profile <MessageCircle className="ml-2" />
             </Button>

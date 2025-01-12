@@ -9,21 +9,25 @@ import { ApiResponse } from '@/src/types/ApiResponse';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios, { AxiosError } from 'axios';
 import { useParams, useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2, CheckCircle2 } from 'lucide-react';
 
 const VerifyAccountPage = () => {
     const router = useRouter();
     const params = useParams<{username: string}>();
     const { toast } = useToast();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<z.infer<typeof verifySchema>>({
         resolver: zodResolver(verifySchema)
     });
 
     const onSubmit = async (data: z.infer<typeof verifySchema>) => {
-        try{
+        setIsSubmitting(true);
+        try {
             const response = await axios.post(`/api/verify-code`, {
                 username: params.username,
                 code: data.code
@@ -35,8 +39,7 @@ const VerifyAccountPage = () => {
             });
 
             router.replace('/sign-in');
-        }
-        catch(err){
+        } catch(err) {
             console.error("Error verifying account", err);
             const axiosError = err as AxiosError<ApiResponse>;
             let errorMessage = axiosError.response?.data.message || "An error occurred verifying account";
@@ -45,19 +48,26 @@ const VerifyAccountPage = () => {
                 description: errorMessage,
                 variant: "destructive"
             });
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
     return (
-        <div className='flex justify-center items-center min-h-screen bg-gray-100'>
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-                <div className="text-center">
-                    <h1 className='text-4xl font-extrabold tracking-tight lg:text-5xl mb-6'>
-                        Verify Your Account
-                    </h1>
-                    <p className='mb-4'>Enter the verification code sent to your email</p>
+        <div className="flex justify-center items-center h-[90.5vh] bg-gradient-to-r from-gray-100 to-gray-200">
+            <Card className="w-full max-w-md">
+                <CardHeader className="space-y-1">
+                    <div className="flex items-center justify-center mb-2">
+                        <CheckCircle2 className="h-10 w-10 text-primary" />
+                    </div>
+                    <CardTitle className="text-2xl font-bold text-center">Verify Your Account</CardTitle>
+                    <p className="text-sm text-muted-foreground text-center">
+                        Enter the verification code sent to your email
+                    </p>
+                </CardHeader>
+                <CardContent>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
                                 name='code'
                                 control={form.control}
@@ -65,17 +75,37 @@ const VerifyAccountPage = () => {
                                     <FormItem>
                                         <FormLabel>Verification Code</FormLabel>
                                         <FormControl>
-                                            <Input placeholder='Verification Code' {...field} />
+                                            <div className="relative">
+                                                <Input 
+                                                    placeholder='Enter your code' 
+                                                    {...field} 
+                                                    className="pl-10"
+                                                />
+                                                <CheckCircle2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...
+                                    </>
+                                ) : (
+                                    'Verify Account'
+                                )}
+                            </Button>
                         </form>
                     </Form>
-                </div>
-            </div>
+                </CardContent>
+                <CardFooter>
+                    <p className="text-sm text-center w-full text-muted-foreground">
+                        Didn't receive a code? <Button variant="link" className="p-0 h-auto font-normal">Resend Code</Button>
+                    </p>
+                </CardFooter>
+            </Card>
         </div>
     );
 }

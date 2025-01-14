@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { messageSchema } from '@/src/schemas/messageSchema'
@@ -9,34 +9,59 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Toaster } from "@/components/ui/toaster"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Send, MessageSquare, Sparkles, RefreshCw } from 'lucide-react'
+import { Send, Sparkles, RefreshCw } from 'lucide-react'
 import confetti from 'canvas-confetti'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Typewriter } from 'react-simple-typewriter'
 import { useToast } from "@/hooks/use-toast"
+import axios from 'axios'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
 
 type FormData = {
   content: string
 }
 
-export default function UserProfilePage({ params }: { params: { username: string } }) {
-  const [suggestions, setSuggestions] = useState<string[]>([])
+const initialSuggestions = [
+  "What's your favorite way to spend a weekend?",
+  "Do you like somebody?",
+  "If you could instantly master any skill, what would it be?"
+]
+
+export default function UserProfilePage() {
+  const { username } = useParams<{ username: string }>()
   const [isLoading, setIsLoading] = useState(false)
+  const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions)
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
   const { toast } = useToast()
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(messageSchema)
   })
 
+  const fetchSuggestions = async () => {
+    setIsLoadingSuggestions(true)
+    try {
+      const response = await axios.get('/api/suggest-messages')
+      if (response.data.success) {
+        const messages = response.data.data.messages.split('||')
+        setSuggestions(messages)
+      }
+    } catch (error) {
+      console.error('Failed to fetch suggestions:', error)
+      setSuggestions(initialSuggestions)
+    } finally {
+      setIsLoadingSuggestions(false)
+    }
+  }
+
   const onSubmit = async (data: FormData) => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/send-message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: params.username, message: data.content })
+      const response = await axios.post('/api/send-message', {
+        username: username,
+        message: data.content
       })
-      const result = await response.json()
-      if (result.success) {
+      
+      if (response.data.success) {
         confetti({
           particleCount: 100,
           spread: 70,
@@ -49,12 +74,14 @@ export default function UserProfilePage({ params }: { params: { username: string
         })
         setValue('content', '')
       } else {
-        throw new Error(result.message)
+        throw new Error(response.data.message)
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to send message",
+        description: axios.isAxiosError(error) 
+          ? error.response?.data?.message || "Failed to send message"
+          : "Failed to send message",
         variant: "destructive",
         duration: 5000,
       })
@@ -62,43 +89,18 @@ export default function UserProfilePage({ params }: { params: { username: string
       setIsLoading(false)
     }
   }
-
-  const fetchSuggestions = async () => {
-    setIsLoading(true)
-    try {
-      const response = await fetch('/api/suggest-messages', { method: 'POST' })
-      const result = await response.json()
-      if (result.success) {
-        setSuggestions(result.data.messages.split('||'))
-      }
-    } catch (error) {
-      console.error('Failed to fetch suggestions:', error)
-      toast({
-        title: "Error",
-        description: "Failed to fetch message suggestions. Please try again.",
-        variant: "destructive",
-        duration: 5000,
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchSuggestions()
-  }, [])
 
   return (
     <div className="container mx-auto p-4 min-h-screen">
-      <div className="w-full mx-auto">
+      <Card className="w-full max-w-4xl mx-auto">
         <CardHeader className="text-center">
           <Avatar className="w-24 h-24 mx-auto mb-4">
-            <AvatarImage src={`https://api.dicebear.com/6.x/avataaars/svg?seed=${params.username}`} />
-            <AvatarFallback>{params.username[0].toUpperCase()}</AvatarFallback>
+            <AvatarImage src={`https://api.dicebear.com/6.x/avataaars/svg?seed=${username}`} alt={`${username}'s avatar`} />
+            <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
           </Avatar>
           <CardTitle className="text-3xl font-bold">
             <Typewriter
-              words={[`Message ${params.username}`]}
+              words={[`Message ${username}`]}
               loop={1}
               cursor
               cursorStyle='_'
@@ -110,83 +112,74 @@ export default function UserProfilePage({ params }: { params: { username: string
           <CardDescription>Send a friendly message or ask a question!</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Textarea
-              placeholder="Type your message here..."
-              {...register('content')}
-              className="min-h-[100px] text-lg"
-            />
-            {errors.content && (
-              <p className="text-red-500 text-sm">{errors.content.message}</p>
-            )}
-            <Button 
-              type="submit" 
-              className="w-full text-lg" 
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="mr-2 h-4 w-4" />
-              )}
-              Send Message
-            </Button>
-          </form>
-
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              <Sparkles className="mr-2 h-5 w-5 text-yellow-500" />
-              Message Suggestions
-            </h3>
-            <AnimatePresence>
-              <motion.div 
-                className="grid grid-cols-1 gap-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex-1">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <Textarea
+                  placeholder="Type your message here..."
+                  {...register('content')}
+                  className="min-h-[200px] text-lg"
+                  aria-label="Message content"
+                />
+                {errors.content && (
+                  <p className="text-red-500 text-sm" role="alert">{errors.content.message}</p>
+                )}
+                <Button 
+                  type="submit" 
+                  className="w-full text-lg" 
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="mr-2 h-4 w-4" />
+                  )}
+                  Send Message
+                </Button>
+              </form>
+            </div>
+            
+            <div className="md:w-64 space-y-4">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold">Message Ideas</h3>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={fetchSuggestions}
+                  disabled={isLoadingSuggestions}
+                  aria-label={isLoadingSuggestions ? "Loading new suggestions" : "Get new suggestions"}
+                >
+                  {isLoadingSuggestions ? (
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+              <div className="space-y-2">
                 {suggestions.map((suggestion, index) => (
-                  <motion.div
+                  <Button
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ delay: index * 0.1 }}
+                    variant="outline"
+                    className="w-full text-left h-auto whitespace-normal"
+                    onClick={() => setValue('content', suggestion)}
                   >
-                    <Button
-                      variant="outline"
-                      className="w-full text-left h-auto whitespace-normal"
-                      onClick={() => setValue('content', suggestion, { shouldValidate: true })}
-                    >
-                      {suggestion}
-                    </Button>
-                  </motion.div>
+                    {suggestion}
+                  </Button>
                 ))}
-              </motion.div>
-            </AnimatePresence>
-            <Button 
-              onClick={fetchSuggestions} 
-              className="w-full mt-4"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <MessageSquare className="mr-2 h-4 w-4" />
-              )}
-              Get New Suggestions
-            </Button>
+              </div>
+            </div>
           </div>
 
           <div className="mt-8 p-6 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 rounded-lg text-center shadow-inner">
             <h3 className="text-xl font-semibold mb-2">Want your own message board?</h3>
             <p className="mb-4 text-gray-600 dark:text-gray-300">Create an account and start receiving messages from friends!</p>
             <Button variant="secondary" className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white">
-              Create Account
+              <Link href="/sign-up">Create Account</Link>
             </Button>
           </div>
         </CardContent>
-      </div>
+      </Card>
       <Toaster />
     </div>
   )

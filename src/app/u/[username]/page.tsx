@@ -24,7 +24,10 @@ type FormData = {
 const initialSuggestions = [
   "What's your favorite way to spend a weekend?",
   "Do you like somebody?",
-  "If you could instantly master any skill, what would it be?"
+  "If you could instantly master any skill, what would it be?",
+  "What profession would you like to persue in future?",
+  "Which is your favourite go to place?",
+  "What's your favorite food?",
 ]
 
 export default function UserProfilePage() {

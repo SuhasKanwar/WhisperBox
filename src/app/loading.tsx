@@ -2,9 +2,8 @@
 
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation'
-import { ChevronRight, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 const LoadingPage = () => {
   const router = useRouter()

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -57,14 +56,18 @@ const IndexPage = () => {
               {messages.map((message, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                   <div className="p-1">
-                    <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                      <CardHeader className="font-semibold text-primary">{message.title}</CardHeader>
-                      <CardContent className="flex aspect-square items-center justify-center p-6">
-                        <p className="text-lg text-center italic">
+                    <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-400 to-pink-500 dark:from-purple-600 dark:to-pink-700 p-1 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                      <div className="absolute inset-0 bg-white dark:bg-gray-800 m-[3px] rounded-lg z-0"></div>
+                      <div className="relative z-10 p-5">
+                        <h3 className="font-semibold text-lg text-primary mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                          {message.title}
+                        </h3>
+                        <p className="text-base italic text-gray-600 dark:text-gray-300">
                           "{message.content}"
                         </p>
-                      </CardContent>
-                    </Card>
+                      </div>
+                      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-pink-500 dark:from-purple-600 dark:to-pink-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                    </div>
                   </div>
                 </CarouselItem>
               ))}

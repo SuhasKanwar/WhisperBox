@@ -6,7 +6,7 @@ export async function POST(request: Request){
         const { message } = await request.json();
         const { text } = await generateText({
             model: groq('gemma2-9b-it'),
-            prompt: `Create a list of three open-ended and engaging questions or a question related to this message (${message}) but a little enhanced question, formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example, your output should be structured like this: message1||message2||message3`,
+            prompt: `Create a list of six open-ended and engaging questions or a question related to this message (${message}) but a little enhanced question, formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example, your output should be structured like this: message1||message2||message3||message4||message5||message6.`,
         });
         return Response.json(
             {

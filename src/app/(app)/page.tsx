@@ -15,10 +15,47 @@ import { motion } from "framer-motion";
 import { ArrowRight, MessageCircle } from 'lucide-react';
 import Link from "next/link";
 
+const BackgroundPattern = () => (
+  <div className="fixed inset-0 -z-10">
+    <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800" />
+    <div className="absolute inset-0 opacity-30">
+      {[...Array(12)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full mix-blend-multiply filter blur-xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3],
+            x: [0, Math.random() * 100 - 50, 0],
+            y: [0, Math.random() * 100 - 50, 0],
+          }}
+          transition={{
+            duration: Math.random() * 10 + 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          style={{
+            background: `radial-gradient(circle, ${
+              i % 2 ? 'rgba(168, 85, 247, 0.4)' : 'rgba(236, 72, 153, 0.4)'
+            } 0%, transparent 70%)`,
+            width: `${Math.random() * 40 + 30}rem`,
+            height: `${Math.random() * 40 + 30}rem`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+        />
+      ))}
+    </div>
+    <div className="absolute inset-0 bg-grid-small-black/[0.02] dark:bg-grid-small-white/[0.02]" />
+  </div>
+);
+
 const IndexPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800">
-      <main className="container mx-auto flex-grow flex flex-col items-center justify-center px-4 py-12 space-y-12">
+    <div className="flex flex-col h-[89vh]">
+      <BackgroundPattern />
+      
+      <main className="flex-grow container mx-auto px-4 pt-12 pb-0 space-y-8">
         <motion.section 
           className="text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -39,7 +76,7 @@ const IndexPage = () => {
         </motion.section>
 
         <motion.section 
-          className="w-full max-w-4xl"
+          className="w-full max-w-4xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
@@ -57,7 +94,7 @@ const IndexPage = () => {
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                   <div className="p-1">
                     <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-400 to-pink-500 dark:from-purple-600 dark:to-pink-700 p-1 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                      <div className="absolute inset-0 bg-white dark:bg-gray-800 m-[3px] rounded-lg z-0"></div>
+                      <div className="absolute inset-0 bg-white/90 dark:bg-gray-800/90 m-[3px] rounded-lg z-0"></div>
                       <div className="relative z-10 p-5">
                         <h3 className="font-semibold text-lg text-primary mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
                           {message.title}
@@ -95,7 +132,7 @@ const IndexPage = () => {
         </motion.section>
       </main>
 
-      <footer className="bg-gray-100 dark:bg-gray-900 py-6 mt-12">
+      <footer className="bg-gray-100/80 dark:bg-gray-900/80 py-4">
         <div className="container mx-auto text-center text-muted-foreground">
           <p>&copy; 2025 WhisperBox. All rights reserved.</p>
         </div>

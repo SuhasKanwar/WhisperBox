@@ -12,7 +12,6 @@ import { ApiResponse } from "@/src/types/ApiResponse";
 import { User } from "next-auth";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { Loader2, RefreshCcw, Copy, LinkIcon } from 'lucide-react';
 import MessageCard from "@/components/MessageCard";
 import {

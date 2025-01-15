@@ -2,10 +2,10 @@ import mongoose, { Schema, Document } from "mongoose";
 import { Message, MessageSchema } from './Messages';
 
 export interface User extends Document {
-    username: String;
-    email: String;
-    password: String;
-    otp: String;
+    username: string;
+    email: string;
+    password: string;
+    otp: string;
     otpExpiry: Date;
     isVerified: boolean;
     isAcceptingMessages: boolean;

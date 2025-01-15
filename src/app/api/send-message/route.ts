@@ -47,6 +47,7 @@ export async function POST(request: Request){
         );
     }
     catch(err){
+        console.error("Error sending the message:", err);
         return Response.json(
             {
                 success: false,

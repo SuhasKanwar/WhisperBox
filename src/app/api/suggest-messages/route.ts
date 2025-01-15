@@ -22,6 +22,7 @@ export async function POST(request: Request){
         );
     }
     catch(err){
+        console.error("Error in generating suggested messages", err);
         return Response.json(
             {
                 success: false,

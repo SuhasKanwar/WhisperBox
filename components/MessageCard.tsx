@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { Card, CardContent, CardHeader } from "./ui/card";
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 import { Trash2, Calendar, Clock } from 'lucide-react';
@@ -27,9 +27,10 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
                 description: response.data.message,
                 variant: "default",
             });
-            let mssgID = message._id as string;
+            const mssgID = message._id as string;
             onMessageDelete(mssgID);
         } catch (error) {
+            console.error("Error deleting the message: ", error);
             toast({
                 title: "Error",
                 description: "Failed to delete message. Please try again.",

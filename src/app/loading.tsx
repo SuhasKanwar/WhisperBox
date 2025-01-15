@@ -1,14 +1,10 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 const LoadingPage = () => {
-  const router = useRouter()
-  const [isHovering, setIsHovering] = useState(false)
-
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center p-4">
       <motion.div
@@ -32,22 +28,22 @@ const LoadingPage = () => {
       <motion.div
         className="w-16 h-1 bg-gray-300 dark:bg-gray-700 rounded-full mb-8"
         initial={{ width: 0 }}
-        animate={{ width: '4rem' }}
+        animate={{ width: "4rem" }}
         transition={{ duration: 0.5, delay: 0.2 }}
       />
 
       <div className="relative mb-8">
         <AnimatePresence>
-          {isHovering && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 p-2 rounded-md shadow-lg"
-            >
-              <p className="text-sm text-gray-600 dark:text-gray-400">Patience is a virtue</p>
-            </motion.div>
-          )}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 p-2 rounded-md shadow-lg"
+          >
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Patience is a virtue
+            </p>
+          </motion.div>
         </AnimatePresence>
       </div>
 
@@ -66,7 +62,7 @@ const LoadingPage = () => {
         <span>Loading with sophistication</span>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default LoadingPage;

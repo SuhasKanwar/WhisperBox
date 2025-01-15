@@ -28,7 +28,6 @@ export const authOptions: NextAuthOptions = {
                     if(!user.isVerified){
                         throw new Error("Please verify your account before logging in");
                     }
-                    // @ts-ignore
                     const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
                     if(isPasswordCorrect){
                         return user;

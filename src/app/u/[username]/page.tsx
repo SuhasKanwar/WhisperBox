@@ -95,33 +95,37 @@ export default function UserProfilePage() {
 
   return (
     <motion.div 
-      className="container mx-auto p-4 min-h-screen"
+      className="container mx-auto p-4 min-h-[90.5vh]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <motion.section 
-        className="flex flex-col md:flex-row gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex-1 flex flex-col">
-          <div className="mb-4">
-            <Avatar className="w-16 h-16">
+        <div className="space-y-6">
+          <div className="flex items-center space-x-4">
+            <Avatar className="w-20 h-20">
               <AvatarImage src={`https://api.dicebear.com/6.x/avataaars/svg?seed=${username}`} alt={`${username}'s avatar`} />
               <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
             </Avatar>
-            <Typewriter
-              words={[`Message ${username}`]}
-              loop={1}
-              cursor
-              cursorStyle='_'
-              typeSpeed={70}
-              deleteSpeed={50}
-              delaySpeed={1000}
-            />
-            <p>Send a friendly message or ask a question!</p>
+            <div>
+              <h2 className="text-2xl font-bold">
+                <Typewriter
+                  words={[`Message ${username}`]}
+                  loop={1}
+                  cursor
+                  cursorStyle='_'
+                  typeSpeed={70}
+                  deleteSpeed={50}
+                  delaySpeed={1000}
+                />
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300">Send a friendly message or ask a question!</p>
+            </div>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Textarea
@@ -149,7 +153,7 @@ export default function UserProfilePage() {
         </div>
 
         <motion.div 
-          className="flex-1 md:w-64 space-y-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow"
+          className="space-y-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -192,7 +196,7 @@ export default function UserProfilePage() {
       </motion.section>
       
       <motion.section
-        className="mt-8 p-6 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 rounded-lg text-center shadow-inner"
+        className="mt-12 p-6 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 rounded-lg text-center shadow-inner"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}

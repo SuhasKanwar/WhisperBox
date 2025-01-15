@@ -164,3 +164,27 @@ input[type="radio"]:focus {
     @apply bg-background text-foreground;
   }
 }
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-color-1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9aa3ac;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #abb5be;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8b9bac var(--background-color-1);
+}

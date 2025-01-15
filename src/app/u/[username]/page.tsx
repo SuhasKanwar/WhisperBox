@@ -33,14 +33,17 @@ export default function UserProfilePage() {
   const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions)
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
   const { toast } = useToast()
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm<FormData>({
     resolver: zodResolver(messageSchema)
   })
 
   const fetchSuggestions = async () => {
     setIsLoadingSuggestions(true)
+    const currentMessage = watch('content') || "Hello, how are you?"
     try {
-      const response = await axios.get('/api/suggest-messages')
+      const response = await axios.post('/api/suggest-messages', {
+        message: currentMessage
+      })
       if (response.data.success) {
         const messages = response.data.data.messages.split('||')
         setSuggestions(messages)
@@ -51,7 +54,7 @@ export default function UserProfilePage() {
     } finally {
       setIsLoadingSuggestions(false)
     }
-  }
+  }  
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true)

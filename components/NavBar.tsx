@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger 
 } from "./ui/dropdown-menu";
 import { LogOut, Search } from 'lucide-react';
+import Image from "next/image";
 
 const NavBar = () => {
     const { data: session } = useSession();
@@ -34,7 +35,8 @@ const NavBar = () => {
     return (
         <nav className="p-4 md:p-6 shadow-md bg-white dark:bg-gray-800">
             <div className="container mx-auto flex flex-wrap justify-between items-center gap-4">
-                <Link href='/' className="text-2xl font-bold text-primary">
+                <Link href='/' className="text-2xl font-bold text-primary flex flex-row items-center gap-3">
+                    <Image src="/logo.ico" alt="WhisperBox" width={32} height={32} />
                     WhisperBox
                 </Link>
                 <form onSubmit={handleSearch} className="flex-grow max-w-md mx-4">

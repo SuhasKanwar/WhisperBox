@@ -52,8 +52,8 @@ const BackgroundPattern = () => (
 
 const IndexPage = () => {
   return (
-    <div className="flex flex-col h-[89vh]">
-      <BackgroundPattern />
+    <div className="flex flex-col h-[89vh] bg-[#F5F6F8]">
+      {/* <BackgroundPattern /> */}
       
       <main className="flex-grow container mx-auto px-4 pt-12 pb-0 space-y-8">
         <motion.section 

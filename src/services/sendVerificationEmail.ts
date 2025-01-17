@@ -1,5 +1,4 @@
-import { resend } from '@/lib/resend';
-import VerificationEmail from '../../components/server/VerificationEmail';
+import nodemailer from 'nodemailer';
 import { ApiResponse } from '@/src/types/ApiResponse';
 
 export async function sendVerificationEmail(
@@ -8,11 +7,18 @@ export async function sendVerificationEmail(
     otp: string
 ) : Promise<ApiResponse>{
     try {
-        await resend.emails.send({
-            from: 'onboarding@resend.dev',
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+        await transporter.sendMail({
+            from: process.env.EMAIL,
             to: email,
             subject: 'WhisperBox | Verification Code',
-            react: VerificationEmail({ username, otp })
+            text: `Hello ${username},\n\nYour verification code is ${otp}\n\nThanks,\nWhisperBox Team`,
         });
         return {
             success: true,

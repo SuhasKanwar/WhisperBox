@@ -54,7 +54,6 @@ const LoadingPage = () => {
         transition={{ delay: 0.5 }}
       >
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        <p className="text-sm">Preparing your experience</p>
       </motion.div>
 
       <div className="absolute bottom-4 left-4 right-4 flex justify-between text-xs text-gray-400">
